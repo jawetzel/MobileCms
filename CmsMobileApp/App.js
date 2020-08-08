@@ -3,14 +3,12 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import * as Sentry from '@sentry/react-native';
 import {SentryEnvVars} from "./EnvVars";
+import {ReportSentryError} from "./App/DataAccess";
 
 Sentry.init({ 
   dsn: SentryEnvVars.dsn,
   enableNative: false
 });
-
-throw new Error("My first Sentry error!");
-//Sentry.nativeCrash();
 
 export default function App() {
   return (

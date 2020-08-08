@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/react-native";
 
 
 const LiveUrl = "https://";
@@ -6,7 +7,14 @@ const DevUrl = "http://localhost:3001";
 let url = LiveUrl;
 
 
-
+export const ReportSentryError = (error, scopeData = {}) => {
+    Sentry.configureScope((scope) => {
+        scope.setExtra("Data", {
+            ...scopeData,
+        });
+    });
+    Sentry.captureException(error);
+};
 
 
 
