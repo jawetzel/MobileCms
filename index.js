@@ -91,7 +91,7 @@ app.use(helmet.featurePolicy({
     }
 }));
 
-app.use('/', express.static(('../front-end/buildServe/'), {
+app.use('/', express.static(('../cms-front-end-web/serve/'), {
     setHeaders: function (res, path) {
         if (path.indexOf('index.html') > -1) {
             res.setHeader('Cache-Control', `public, max-age=${oneDay}`)
@@ -100,7 +100,7 @@ app.use('/', express.static(('../front-end/buildServe/'), {
 
 app.get(/^\/(?!api).*/, function(req, res, next) {
     res.setHeader('Cache-Control', `public, max-age=${oneDay}`);
-    res.sendFile(('../front-end/buildServe/index.html'), {root: __dirname});
+    res.sendFile(('../cms-front-end-web/serve/index.html'), {root: __dirname});
 });
 
 const port = process.env.PORT || 3001;
