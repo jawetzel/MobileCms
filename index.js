@@ -11,6 +11,8 @@ const app = express();
 
 app.set('trust proxy', true);
 
+console.log(__dirname);
+
 if(!process.env || !process.env.NODE_ENV || process.env.NODE_ENV !== 'production'){
     const ENV_FILE = path.join(__dirname, '.env');
     require('dotenv').config({ path: ENV_FILE });
@@ -19,9 +21,9 @@ if(!process.env || !process.env.NODE_ENV || process.env.NODE_ENV !== 'production
 app.use(compression());
 
 var corsOptionsDelegate = function (req, callback) {
-    callback(null, { origin: false });
+    callback(null, { origin: true });
 };
-app.use(cors(corsOptionsDelegate));
+app.use(cors());
 
 app.use(function (req, res, next) {
     res.removeHeader("X-Powered-By");
@@ -60,13 +62,11 @@ app.use(helmet.hidePoweredBy());
 app.use(helmet.contentSecurityPolicy({
     directives: {
         defaultSrc: ["'self'"],
-        scriptSrc: ["'self'"],
+        scriptSrc: ["'self'", "'unsafe-inline'"],
         styleSrc: ["'self'"],
         connectSrc: ["'self'"],
         fontSrc: ["'self'"],
-        imgSrc: ["*", "data:", "blob:"],
-        upgradeInsecureRequests: true,
-        workerSrc: false  // This is not set.
+        imgSrc: ["*", "data:", "blob:"]
     }
 }));
 
@@ -76,22 +76,8 @@ app.use(helmet.referrerPolicy({ policy: 'same-origin' }));
 
 app.use(helmet.noSniff());
 
-app.use(helmet.featurePolicy({
-    features: {
-        accelerometer: ["'none'"],
-        ambientLightSensor: ["'none'"],
-        camera: ["'none'"],
-        autoplay: ["'none'"],
-        geolocation: ["'none'"],
-        gyroscope: ["'none'"],
-        magnetometer: ["'none'"],
-        microphone: ["'none'"],
-        usb: ["'none'"],
-        vr: ["'none'"],
-    }
-}));
 
-app.use('/', express.static(('../cms-front-end-web/serve/'), {
+app.use('/', express.static(('./cms-front-end-web/serve/'), {
     setHeaders: function (res, path) {
         if (path.indexOf('index.html') > -1) {
             res.setHeader('Cache-Control', `public, max-age=${oneDay}`)
@@ -100,7 +86,7 @@ app.use('/', express.static(('../cms-front-end-web/serve/'), {
 
 app.get(/^\/(?!api).*/, function(req, res, next) {
     res.setHeader('Cache-Control', `public, max-age=${oneDay}`);
-    res.sendFile(('../cms-front-end-web/serve/index.html'), {root: __dirname});
+    res.sendFile(('./cms-front-end-web/serve/index.html'), {root: __dirname});
 });
 
 const port = process.env.PORT || 3001;
