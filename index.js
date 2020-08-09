@@ -6,17 +6,14 @@ const helmet = require('helmet');
 const compression = require('compression');
 const rateLimit = require("express-rate-limit");
 const path = require('path');
-
-const app = express();
-
-app.set('trust proxy', true);
-
-console.log(__dirname);
-
 if(!process.env || !process.env.NODE_ENV || process.env.NODE_ENV !== 'production'){
     const ENV_FILE = path.join(__dirname, '.env');
     require('dotenv').config({ path: ENV_FILE });
 }
+
+const app = express();
+
+app.set('trust proxy', true);
 
 app.use(compression());
 
