@@ -1,6 +1,6 @@
 const MongoClient = require('mongodb').MongoClient;
 const ObjectID = require('mongodb').ObjectID;
-
+const uuid = require("uuid")
 const uri = process.env.MONGODB_URI;
 
 const client = new MongoClient(uri, { useNewUrlParser: true });
@@ -13,6 +13,22 @@ const dbName = 'CmsMobileApp';
 
 client.connect(err => {
     if(err) console.log(err);
+
+    var pagesCrud = GenerateCrud(collections.Pages);
+
+    pagesCrud.Get().then(res => {
+        if(res.success && res.data){
+            var hasAbout = res.data.filter(x => x.Title === "About").length > 0;
+            if(!hasAbout) pagesCrud.Create({Title: "About", versionId: uuid.v4(), details: []}).then(() => {}).catch(() => {});
+            var hasHome = res.data.filter(x => x.Title === "Home").length > 0;
+            if(!hasHome) pagesCrud.Create({Title: "Home", versionId: uuid.v4(), details: []}).then(() => {}).catch(() => {});
+            var hasContact = res.data.filter(x => x.Title === "Contact").length > 0;
+            if(!hasContact) pagesCrud.Create({Title: "Contact", versionId: uuid.v4(), details: []}).then(() => {}).catch(() => {});
+        }
+    }).catch(err => {
+
+    })
+
 });
 
 var GenerateCrud = (collectionName) => {
@@ -29,7 +45,7 @@ var GenerateCrud = (collectionName) => {
                         reject(err);
                     } else{
                         data.forEach(row => {
-                            row.idString = row.toHexString();
+                            row.idString = row._id.toHexString();
                         })
 
                         if(idString && idString.length > 0){

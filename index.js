@@ -11,6 +11,8 @@ if(!process.env || !process.env.NODE_ENV || process.env.NODE_ENV !== 'production
     require('dotenv').config({ path: ENV_FILE });
 }
 
+const mongoDbAccess = require("./API/DataAccess/MongoDb");
+
 const app = express();
 
 app.set('trust proxy', true);
