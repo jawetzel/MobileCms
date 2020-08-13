@@ -10,6 +10,7 @@ if(!process.env || !process.env.NODE_ENV || process.env.NODE_ENV !== 'production
     const ENV_FILE = path.join(__dirname, '.env');
     require('dotenv').config({ path: ENV_FILE });
 }
+const smtp = require("./API/DataAccess/Smtp");
 
 const mongoDbAccess = require("./API/DataAccess/MongoDb");
 
